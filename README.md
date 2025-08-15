@@ -1,5 +1,7 @@
 # Creating a macOS Helix Application Using Alacritty
 
+![Demonstrate TermHelix App](output.gif)
+
 ## Why?
 
 I prefer to run my editor as a separate, dedicated macOS application rather than from an existing terminal session.

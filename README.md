@@ -38,11 +38,40 @@ It's just Alacritty started with hx command on startup using an AppleScript.
 
 6. **Create an AppleScript launcher** (using the Script Editor or modifying the existing one in repo):
 
-   ```applescript
-   -- Adjust the path if Helix is installed somewhere else.
-   -- This example assumes Helix was installed via Homebrew.
-   do shell script "open -a /Applications/TermHelix.app --args --title 'Helix' -e /opt/homebrew/bin/hx"
-   ```
+```applescript
+property termAppPath : "/Applications/TermHelix.app"
+property hxPath : "/opt/homebrew/bin/hx"
+property windowTitle : "Helix"
+property winColumns : 220 -- width in characters
+property winLines : 30    -- height in characters
+
+on run
+	-- No files: just launch Helix
+	my launchHelix({})
+end run
+
+on open theItems
+	-- Files dropped: open them all
+	my launchHelix(theItems)
+end open
+
+on launchHelix(theItems)
+	set argString to ""
+	repeat with anItem in theItems
+		set fp to POSIX path of anItem
+		set argString to argString & " " & quoted form of fp
+	end repeat
+	
+	-- Build command with window size options
+	set cmd to "open -a " & quoted form of termAppPath & ¬
+		" --args --title " & quoted form of windowTitle & ¬
+		" --option window.dimensions.columns=" & winColumns & ¬
+		" --option window.dimensions.lines=" & winLines & ¬
+		" -e " & quoted form of hxPath & argString
+	
+	do shell script cmd
+end launchHelix
+```
 
 7. **Export the AppleScript**:
 
